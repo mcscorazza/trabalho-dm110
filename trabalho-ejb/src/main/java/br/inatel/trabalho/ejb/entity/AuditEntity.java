@@ -32,4 +32,12 @@ public class AuditEntity {
     public void setOperation(String string) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    public void setRecordCode(String string) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setTimestamp(LocalDateTime parse) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

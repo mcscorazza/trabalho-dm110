@@ -15,7 +15,6 @@ import jakarta.json.*;
 
 @Stateless
 @Local(OrderLocal.class)
-@Remote
 public class OrderBean implements OrderLocal {
   @PersistenceContext(unitName="trabalhoPU")
   private EntityManager em;
@@ -40,7 +39,7 @@ public class OrderBean implements OrderLocal {
   }
   @Override
   public List<OrderTO> listAll() {
-    List<OrderEntity> list = em.createQuery("FROM OrderEntity", OrderEntity.class).getResultList();
+    List<OrderEntity> list = em.createQuery("SELECT e FROM OrderEntity e", OrderEntity.class).getResultList();
     List<OrderTO> out = new ArrayList<>();
     list.forEach(e -> out.add(toTO(e)));
     return out;

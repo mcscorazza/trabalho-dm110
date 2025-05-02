@@ -26,7 +26,4 @@ public class OrderEntity {
     @Column(length = 10)
     private String orderValue;
 
-    public String getOrderCode() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 }

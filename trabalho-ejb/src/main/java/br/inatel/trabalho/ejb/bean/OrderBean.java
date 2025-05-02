@@ -64,7 +64,25 @@ public class OrderBean implements OrderLocal {
 
   // Métodos de conversão
   private OrderEntity toEntity(OrderTO to) {
-    return null; /* ... */ }
-  private OrderTO toTO(OrderEntity e) {
-    return null; /* ... */ }
+    return OrderEntity.builder()
+        .orderCode(to.getOrderCode())
+        .productCode(to.getProductCode())
+        .cpf(to.getCpf())
+        .amount(to.getAmount())
+        .dateOrder(to.getDateOrder())
+        .orderValue(to.getOrderValue())
+        .build();
+}
+
+private OrderTO toTO(OrderEntity e) {
+  return OrderTO.builder()
+      .orderCode(e.getOrderCode())
+      .productCode(e.getProductCode())
+      .cpf(e.getCpf())
+      .amount(e.getAmount())
+      .dateOrder(e.getDateOrder())
+      .orderValue(e.getOrderValue())
+      .build();
+}
+
 }

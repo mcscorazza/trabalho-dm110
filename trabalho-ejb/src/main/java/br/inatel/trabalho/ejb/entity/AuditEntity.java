@@ -21,10 +21,6 @@ import lombok.Setter;
 @Builder
 public class AuditEntity {
 
-    public static Object builder() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     @Id
     @GeneratedValue
     private Long id;

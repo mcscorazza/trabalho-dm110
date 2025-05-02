@@ -6,11 +6,20 @@
   
   <persistence-unit name="trabalhoPU" transaction-type="JTA">
     <jta-data-source>java:/OrderDS</jta-data-source>
-
     <properties>
 		<property name="jboss.as.jpa.managed" value="true" />
 		<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
 		<property name="hibernate.show_sql" value="true" />
 	</properties>
   </persistence-unit>
+
+  <persistence-unit name="auditPU" transaction-type="JTA">
+    <jta-data-source>java:/AuditDS</jta-data-source>
+    <properties>
+      <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
+      <property name="hibernate.show_sql" value="true"/>
+      <property name="jakarta.persistence.schema-generation.database.action" value="none"/>
+    </properties>
+  </persistence-unit>
+
 </persistence>

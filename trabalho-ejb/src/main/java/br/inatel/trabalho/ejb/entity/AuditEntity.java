@@ -21,6 +21,10 @@ import lombok.Setter;
 @Builder
 public class AuditEntity {
 
+    public static Object builder() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
     @Id
     @GeneratedValue
     private Long id;
@@ -29,15 +33,4 @@ public class AuditEntity {
     private String operation;
     private LocalDateTime timestamp;
 
-    public void setOperation(String string) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void setRecordCode(String string) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void setTimestamp(LocalDateTime parse) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 }

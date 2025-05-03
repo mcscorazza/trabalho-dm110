@@ -1,5 +1,17 @@
 # Trabalho DM110
 
+O trabalho envolve a modelagem e a implementação de um serviço, conforme apresentados
+em aula, um para cada módulo do projeto do curso.
+
+#### Tema escolhido:
+- 03.Order
+
+#### Integrantes:
+- Marcos Corazza
+- Paulo Matheus
+
+
+
 ### Arquitetura geral do Trabalho
 ![Arquitetura geral do trabalho](https://github.com/mcscorazza/trabalho-dm110/blob/main/docs/Arquitetura%20Trabalho%20DM110.png)
 

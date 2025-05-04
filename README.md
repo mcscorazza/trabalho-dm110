@@ -32,18 +32,25 @@ cd trabalho-dm110
 ```
 
 ## No Windows
-Para criar seu ambiente utilizando o Wildfly com HSQLDB, utilize as instruções a seguir:
+Para criar seu ambiente utilizando o Wildfly com HSQLDB, você pode configurar o arquivo ```.env.bat``` com os caminhos das ferramentas utilizadas,e em seguida executar o script ```config_server.bat``` e seguir os passos indicados no prompt.
 
+Caso queira seguir manualmente, utilize as instruções a seguir:
 
 ### Variaveis de Ambiente
 Configure as variáveis conforme o local dos arquivos em seu sistema:
 ```bash
+:: CAMINHOS DOS BINARIOS E ARQUIVOS DO SEU SISTEMA
 set "WILDFLY_HOME=C:\\etc\\tools\\wildfly-30"
 set "JBOSS_CLI=%WILDFLY_HOME%\\bin\\jboss-cli.bat" 
 set "DRIVER_PATH=C:\\etc\\tools\\hsqldb-2.7.4\\hsqldb\\lib\\hsqldb.jar"
 set "PATH_HSQLDB=C:\\dev\\inatel\\dm110\\hsqldb"
+set "EAR_FILE_PATH=C:\\dev\\inatel\\dm110\\trabalho-dm110\\trabalho-ear\\target\\trabalho-ear-1.0.ear"
+```
+Abaixo estão os dados de configuração e nomes utilizados no trabalho:
+```bash
+:: NOMES E CONFIGURACOES DO TRABALHO
 set "JDBC_CLASS=org.hsqldb.jdbcDriver"
-set "MODULE_NAME=br.inatel.dm110.org.hsqldb"
+set "MODULE_NAME=br.inatel.dm110.hsqldb"
 set "DRIVER_NAME=HSQLDBDriver"
 set "DB_NAME_ORDER=order-dm110.db"
 set "DB_NAME_AUDIT=audit-dm110.db"
@@ -55,20 +62,19 @@ set "DS_ORDER_NAME=OrderDS"
 set "DS_AUDIT_NAME=AuditDS"
 set "JNDI_ORDER=java:/OrderDS"
 set "JNDI_AUDIT=java:/AuditDS"
-set "EAR_FILE_PATH=C:\\dev\\inatel\\dm110\\trabalho-dm110\\trabalho-ear\\target\\trabalho-ear-1.0.ear"
 ```
-
+Com todas as constantes definidas, criamos as CONNECTION STRINGS para os Bancos de Dados
 ```bash
 :: CONNECTION STRINGS
-set "CONN_URL_ORDER=jdbc:hsqldb:file:%PATH_HSQLDB%\\%DB_NAME_ORDER%,user-name=%USER_DB_ORDER%,password=%PASS_DB_ORDER%"
-set "CONN_URL_AUDIT=jdbc:hsqldb:file:%PATH_HSQLDB%\\%DB_NAME_AUDIT%,user-name=%USER_DB_AUDIT%,password=%PASS_DB_AUDIT%"
+set "CONN_URL_ORDER=jdbc:hsqldb:file:%PATH_HSQLDB%\\%DB_NAME_ORDER%"
+set "CONN_URL_AUDIT=jdbc:hsqldb:file:%PATH_HSQLDB%\\%DB_NAME_AUDIT%"
 ```
-
+O comando abaixo inicializa o Wildfly em uma janela separada do CMD:
 ```bash
 :: INICIANDO O WILDFLY
 start "" %WILDFLY_HOME%\bin\standalone.bat -c=standalone-full.xml
 ```
-
+Caso necessário, utilize o comando abaixo para criar uma senha para o usuário 'admin' (senha: senha123 - apenas para ambiente didático)
 ```bash
 :: CRIANDO USUÁRIO ADMIN PARA WILDFLY
 %WILDFLY_HOME%\bin\add-user.bat -u admin -p senha123 -e
@@ -76,9 +82,8 @@ start "" %WILDFLY_HOME%\bin\standalone.bat -c=standalone-full.xml
 
 Para criar os bancos de dados, utilize os comandos abaixo:
 ```bash
-:: CRIANDO O BANCO DE DADOS NO HSQLDB
+:: CRIANDO O BANCO DE DADOS ORDER NO HSQLDB
 java -jar %DRIVER_PATH% --url jdbc:hsqldb:file:%PATH_HSQLDB%\\%DB_NAME_ORDER% --user %USER_DB_ORDER% --password %PASS_DB_ORDER%
-java -jar %DRIVER_PATH% --url jdbc:hsqldb:file:%PATH_HSQLDB%\\%DB_NAME_AUDIT% --user %USER_DB_AUDIT% --password %PASS_DB_AUDIT%
 ```
 Após criar o DB_Orders, crie a tabela ORDERS usando o comando a seguir:
 
@@ -93,7 +98,10 @@ CREATE TABLE ORDERS (
   PRIMARY KEY (ORDERCODE)
 );
 ```
-
+```bash
+:: CRIANDO O BANCO DE DADOS AUDIT NO HSQLDB
+java -jar %DRIVER_PATH% --url jdbc:hsqldb:file:%PATH_HSQLDB%\\%DB_NAME_AUDIT% --user %USER_DB_AUDIT% --password %PASS_DB_AUDIT%
+```
 E após criar o DB_Audit, execute a query a seguir para criar a tabela AUDIT:
 ```sql
 CREATE TABLE AUDIT (
@@ -104,25 +112,28 @@ CREATE TABLE AUDIT (
 );
 ```
 
-Para adicionar o Driver HSQLDB no Wildfly utilize os comandos a seguir:
+Para adicionar o Driver HSQLDB na pasta 'modules' do Wildfly utilize o comando a seguir:
 ```bash
-:: ADICIONANDO O DRIVER
+:: ADICIONANDO O DRIVER A PASTA MODULES
 %JBOSS_CLI% --connect --command="module add --name=%MODULE_NAME% --dependencies=javax.transaction.api --export-dependencies=javax.api --resources=%DRIVER_PATH%"
+```
+E o comando abaixo adiciona o driver HSQLDB nas Configurações
+```bash
 %JBOSS_CLI% --connect --command="/subsystem=datasources/jdbc-driver=%DRIVER_NAME%:add(driver-name=%DRIVER_NAME%,driver-module-name=%MODULE_NAME%,driver-class-name=%JDBC_CLASS%)"
 ```
 
-
-Os comandos abaixo criam os Datasources para Orders e Audit
+A seguir os comandos abaixo criam os Datasources para Orders e Audit
 ```bash
 :: CRIANDO OS DATASOURCES
-%JBOSS_CLI% --connect --command="data-source add --name=%DS_ORDER_NAME% --jndi-name=%JNDI_ORDER% --driver-name=%DRIVER_NAME% --connection-url=%CONN_URL_ORDER%"
-%JBOSS_CLI% --connect --command="data-source add --name=%DS_AUDIT_NAME% --jndi-name=%JNDI_AUDIT% --driver-name=%DRIVER_NAME% --connection-url=%CONN_URL_AUDIT%"
+%JBOSS_CLI% --connect --command="data-source add --name=%DS_ORDER_NAME% --jndi-name=%JNDI_ORDER% --driver-name=%DRIVER_NAME% --connection-url=%CONN_URL_ORDER% --user-name=%USER_DB_ORDER% --password=%PASS_DB_ORDER%"
+%JBOSS_CLI% --connect --command="data-source add --name=%DS_AUDIT_NAME% --jndi-name=%JNDI_AUDIT% --driver-name=%DRIVER_NAME% --connection-url=%CONN_URL_AUDIT% --user-name=%USER_DB_AUDIT% --password=%PASS_DB_AUDIT%"
+
 ```
 
 O Comando abaixo cria a fila para a Auditoria
 ```bash
 :: CRIANDO A FILA DE AUDITORIA
-%JBOSS_CLI% --connect --command="jms-queue add --queue-address=auditQueue --durable=true --entries=['java:/jms/queue/auditQueue']"
+%JBOSS_CLI% --connect --command="jms-queue add --queue-address=auditQueue --durable=true --entries=[\"java:/jms/queue/auditQueue\"]"
 ```
 
 
@@ -144,4 +155,8 @@ Comando para verificar se o Banco de Dados está em funcionamento
 :: VERIFICAR SE O DB ESTÁ OK
 %JBOSS_CLI% --connect --command="deployment-info"
 ```
+
+Se tudo correu bem, o endpoit a seguir indicará que está rodando:
+!http://127.0.0.1:8080/trabalho-web/
+
 

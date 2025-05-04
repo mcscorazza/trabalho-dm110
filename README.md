@@ -157,6 +157,57 @@ Comando para verificar se o Banco de Dados está em funcionamento
 ```
 
 Se tudo correu bem, o endpoit a seguir indicará que está rodando:
-!http://127.0.0.1:8080/trabalho-web/
+
+[Trabalho-web]http://127.0.0.1:8080/trabalho-web/
+
+Os endpoints para a API são:
+
+[POST ORDER] http://localhost:8080/trabalho-web/api/orders
+[GET ORDER] http://localhost:8080/trabalho-web/api/orders
+[GET AUDIT] http://localhost:8080/trabalho-web/api/audit
+ 
+E a arvore do projeto ficou assim:
+```bash
+trabalho-dm110/
+├─ trabalho-api/
+│   └─ src/main/java/
+│       └─ br/inatel/trabalho/api/
+│           ├─ OrderTO.java
+│           └─ service/
+└─ OrderLocal.java
+└─ OrderRemote.java
+├─ trabalho-ejb/
+│   ├─ src/main/java/
+│   │   └─ br/inatel/trabalho/ejb/
+│   │       ├─ bean/
+│   │       │   ├─ OrderBean.java 
+│   │       │   └─ AuditBean.java          
+│   │       ├─ entity/
+│   │       │   ├─ OrderEntity.java           
+│   │       │   └─ AuditEntity.java          
+│   │       ├─ mdb/
+│   │       │   └─ AuditMDB.java              
+│   │       └─ service/
+│   │           └─ AuditLocal.java            
+│   └─ src/main/resources/
+│       └─ META-INF/
+│           └─ persistence.xml
+ └─ beans.xml                 
+├─ trabalho-impl/
+│   └─ src/main/java/
+│       └─ br/inatel/trabalho/impl/        
+│           └─ resource/
+│               └─ OrderResource.java 
+      └─ AuditResource.java        
+├─ trabalho-web/    
+      └─  src/main/java/
+│       	└─ br/inatel/trabalho/web/rest
+	      └─ RestApplication.java                           
+└─ trabalho-ear/
+    ├─ pom.xml                               
+    └─ src/main/application/META-INF/
+        └─ application.xml 
+```
+
 
 
